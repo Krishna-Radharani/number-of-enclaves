@@ -1,0 +1,72 @@
+class Solution {
+public:
+    int numEnclaves(vector<vector<int>>& grid) {
+        //using bfs
+        int count=0;
+        int boundaryCount=0;
+        int row=grid.size();
+        int col=grid[0].size();
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                if(grid[i][j]==1){
+                    count++;
+                }
+            }
+        }
+        queue<pair<int,int>>q;
+        vector<vector<bool>>visited(row,vector<bool>(col,false));
+        for (int j = 0; j < col; j++) {
+            if (grid[0][j] == 1 && !visited[0][j]) {
+                q.push({0, j});
+                visited[0][j] = true;
+                boundaryCount++;
+            }
+        }
+
+        // Traverse the last row
+        for (int j = 0; j < col; j++) {
+            if (grid[row - 1][j] == 1 && !visited[row - 1][j]) {
+                q.push({row - 1, j});
+                visited[row - 1][j] = true;
+                boundaryCount++;
+            }
+        }
+
+        // Traverse the first column
+        for (int i = 1; i < row - 1; i++) {
+            if (grid[i][0] == 1 && !visited[i][0]) {
+                q.push({i, 0});
+                visited[i][0] = true;
+                boundaryCount++;
+            }
+        }
+
+        // Traverse the last column
+        for (int i = 1; i < row - 1; i++) {
+            if (grid[i][col - 1] == 1 && !visited[i][col - 1]) {
+                q.push({i, col - 1});
+                visited[i][col - 1] = true;
+                boundaryCount++;
+            }
+        }
+while(!q.empty()){
+    auto front=q.front();
+    int x=front.first;
+    int y=front.second;
+    q.pop();
+    int delrow[]={1,-1,0,0};
+    int delcol[]={0,0,1,-1};
+    for(int i=0;i<4;i++){
+        int nx=x+delrow[i];
+        int ny=y+delcol[i];
+        if(nx>=0 && nx<row && ny>=0 && ny<col && !visited[nx][ny] && grid[nx][ny]==1){
+            q.push({nx,ny});
+            visited[nx][ny]=true;
+            boundaryCount++;
+        }
+    }
+}
+return count-boundaryCount;
+        
+    }
+};
